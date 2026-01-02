@@ -79,3 +79,30 @@ fun HomeScreen(
         )
     }
 }
+
+@Composable
+fun HomeBody(
+    statusUiSiswa: StatusUiSiswa,
+    onSiswaClick: (String) -> Unit,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        when (statusUiSiswa) {
+            is StatusUiSiswa.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+            is StatusUiSiswa.Success -> DaftarSiswa(
+                // PERBAIKAN 1: Gunakan .siswa (bukan .dataSiswa)
+                itemSiswa = statusUiSiswa.siswa,
+                // PERBAIKAN 2: Tambahkan .toString() karena ID tipe Long
+                onSiswaClick = { onSiswaClick(it.id.toString()) },
+                modifier = modifier.fillMaxWidth()
+            )
+            is StatusUiSiswa.Error -> ErrorScreen(
+                retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+    }
+}
