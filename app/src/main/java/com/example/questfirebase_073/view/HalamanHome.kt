@@ -106,3 +106,12 @@ fun HomeBody(
         }
     }
 }
+@Composable
+fun LoadingScreen(modifier: Modifier = Modifier) {
+    Image(
+        modifier = modifier.size(200.dp),
+        // Pastikan ada gambar bernama 'loading_img.png' atau xml di folder drawable
+        painter = painterResource(R.drawable.loading_img),
+        contentDescription = stringResource(R.string.loading)
+    )
+}
