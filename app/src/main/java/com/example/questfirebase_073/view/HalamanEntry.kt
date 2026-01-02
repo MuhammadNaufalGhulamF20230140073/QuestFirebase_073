@@ -23,14 +23,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.davin.questfirebase_073.R
-import com.davin.questfirebase_073.view.route.DestinasiEntry
-// --- BAGIAN YANG DIPERBAIKI (Import dari modeldata) ---
-import com.davin.questfirebase_073.modeldata.DetailSiswa
-import com.davin.questfirebase_073.modeldata.UIStateSiswa
-// -----------------------------------------------------
-import com.davin.questfirebase_073.viewmodel.EntryViewModel
-import com.davin.questfirebase_073.viewmodel.PenyediaViewModel
+// Sesuaikan "com.example" di bawah ini dengan nama project/package asli Anda
+import com.example.questfirebase_073.R
+import com.example.questfirebase_073.view.route.DestinasiEntry
+import com.example.questfirebase_073.modeldata.DetailSiswa
+import com.example.questfirebase_073.modeldata.UIStateSiswa
+import com.example.questfirebase_073.viewmodel.EntryViewModel
+import com.example.questfirebase_073.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +44,7 @@ fun EntrySiswaScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
+            // Pastikan SiswaTopAppBar sudah di-import atau didefinisikan
             SiswaTopAppBar(
                 title = stringResource(DestinasiEntry.titleRes),
                 canNavigateBack = true,
@@ -70,6 +70,7 @@ fun EntrySiswaScreen(
     }
 }
 
+// ... Sisanya (EntrySiswaBody dan FormTambahSiswa) tetap sama
 @Composable
 fun EntrySiswaBody(
     uiStateSiswa: UIStateSiswa,
@@ -125,3 +126,25 @@ fun FormTambahSiswa(
             enabled = enabled,
             singleLine = true
         )
+        OutlinedTextField(
+            value = detailSiswa.telpon,
+            onValueChange = { onValueChange(detailSiswa.copy(telpon = it)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            label = { Text(text = stringResource(R.string.telpon)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+
+        if (enabled) {
+            Text(
+                text = stringResource(R.string.required_field),
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
+            )
+        }
+        Divider(
+            thickness = dimensionResource(R.dimen.padding_small),
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
+        )
+    }
+}
