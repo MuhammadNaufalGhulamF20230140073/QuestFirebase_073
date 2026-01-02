@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
 
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
 
 
