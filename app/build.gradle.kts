@@ -2,7 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // TAMBAHAN: Plugin untuk membaca google-services.json
+    alias(libs.plugins.google.services)
 }
+
 
 android {
     namespace = "com.example.questfirebase_073"
