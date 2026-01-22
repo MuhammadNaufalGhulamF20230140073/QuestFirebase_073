@@ -80,4 +80,141 @@ fun DetailSiswaScreen(
                 )
             }
         },
-        
+        modifier = modifier
+    ) { innerPadding ->
+        val coroutineScope = rememberCoroutineScope()
+        BodyDetailDataSiswa(
+            statusUIDetail = viewModel.statusUIDetail,
+            onDelete = {
+                coroutineScope.launch {
+                    viewModel.hapusSatuSiswa()
+                    navigateBack()
+                }
+            },
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        )
+    }
+}
+
+@Composable
+private fun BodyDetailDataSiswa(
+    statusUIDetail: StatusUIDetail,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+    ) {
+        var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
+        when (statusUIDetail) {
+            is StatusUIDetail.Success -> {
+                // PERBAIKAN 2: Pastikan data tidak null sebelum dikirim ke DetailDataSiswa
+                statusUIDetail.satuSiswa?.let { siswa ->
+                    DetailDataSiswa(
+                        siswa = siswa,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedButton(
+                        onClick = { deleteConfirmationRequired = true },
+                        shape = MaterialTheme.shapes.small,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.delete))
+                    }
+                }
+            }
+            is StatusUIDetail.Loading -> {
+                Text(text = "Loading...", modifier = Modifier.padding(16.dp))
+            }
+            is StatusUIDetail.Error -> {
+                Text(text = "Gagal memuat data", modifier = Modifier.padding(16.dp))
+            }
+        }
+
+        if (deleteConfirmationRequired) {
+            DeleteConfirmationDialog(
+                onDeleteConfirm = {
+                    deleteConfirmationRequired = false
+                    onDelete()
+                },
+                onDeleteCancel = { deleteConfirmationRequired = false }
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailDataSiswa(
+    siswa: Siswa, // Diubah menjadi Siswa (bukan Siswa?) agar tidak perlu !! di dalamnya
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+        ) {
+            BarisDetailData(
+                labelResID = R.string.nama,
+                itemDetail = siswa.nama
+            )
+            BarisDetailData(
+                labelResID = R.string.alamat,
+                itemDetail = siswa.alamat
+            )
+            BarisDetailData(
+                labelResID = R.string.telpon,
+                itemDetail = siswa.telpon
+            )
+        }
+    }
+}
+
+@Composable
+private fun BarisDetailData(
+    @StringRes labelResID: Int,
+    itemDetail: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+    ) {
+        Text(stringResource(labelResID))
+        Spacer(modifier = Modifier.weight(1f))
+        Text(text = itemDetail, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun DeleteConfirmationDialog(
+    onDeleteConfirm: () -> Unit,
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = { /* Do nothing */ },
+        title = { Text(stringResource(R.string.attention)) },
+        text = { Text(stringResource(R.string.delete)) }, // Ganti string 'delete' jika ingin teks "Apakah anda yakin?"
+        modifier = modifier,
+        dismissButton = {
+            TextButton(onClick = onDeleteCancel) {
+                Text(stringResource(R.string.no))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDeleteConfirm) {
+                Text(stringResource(R.string.yes))
+            }
+        }
+    )
+}
