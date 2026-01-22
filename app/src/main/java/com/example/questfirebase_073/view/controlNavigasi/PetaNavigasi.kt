@@ -26,3 +26,34 @@ fun HostNavigasi(
                     navController.navigate("${DestinasiDetail.route}/$it")
                 }
             )
+        }
+        composable(DestinasiEntry.route) {
+            EntrySiswaScreen(
+                navigateBack = { navController.navigate(DestinasiHome.route) }
+            )
+        }
+        composable(
+            DestinasiDetail.routeWithArgs,
+            arguments = listOf(navArgument(DestinasiDetail.itemIdArg) {
+                type = NavType.StringType // ID diterima sebagai String
+            })
+        ) {
+            DetailSiswaScreen(
+                // Mengirim ID ke layar Edit
+                navigateToEditItem = { navController.navigate("${DestinasiEdit.route}/$it") },
+                navigateBack = { navController.navigate(DestinasiHome.route) }
+            )
+        }
+        composable(
+            DestinasiEdit.routeWithArgs,
+            arguments = listOf(navArgument(DestinasiEdit.itemIdArg) {
+                type = NavType.StringType
+            })
+        ) {
+            EditSiswaScreen(
+                navigateBack = { navController.navigate(DestinasiHome.route) },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+    }
+}
