@@ -31,3 +31,19 @@ fun EditSiswaScreen(
                 navigateUp = onNavigateUp
             )
         },
+        modifier = modifier
+    ) { innerPadding ->
+        // EntrySiswaBody diambil dari HalamanEntry.kt (Re-use component)
+        EntrySiswaBody(
+            uiStateSiswa = viewModel.uiStateSiswa,
+            onSiswaValueChange = viewModel::updateUiState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.editSatuSiswa()
+                    navigateBack()
+                }
+            },
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
